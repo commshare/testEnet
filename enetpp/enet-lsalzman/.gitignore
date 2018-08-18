@@ -1,0 +1,10 @@
+*.cbp
+*.dsp
+*.pc
+*.in
+*.m4
+
+.deps/
+.libs/
+m4/
+out/
