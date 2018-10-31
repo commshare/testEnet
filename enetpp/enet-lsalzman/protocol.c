@@ -987,7 +987,7 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
 
     if (host -> receivedDataLength < (size_t) & ((ENetProtocolHeader *) 0) -> sentTime)
       return 0;
-
+    /*可以直接这么强转过来啊*/
     header = (ENetProtocolHeader *) host -> receivedData;
 
     peerID = ENET_NET_TO_HOST_16 (header -> peerID);
@@ -1204,7 +1204,7 @@ enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
        //数据填充进来
        buffer.data = host -> packetData [0];
        buffer.dataLength = sizeof (host -> packetData [0]);
-       //从socket接收数据
+       //从socket接收数据，
        receivedLength = enet_socket_receive (host -> socket,
                                              & host -> receivedAddress,
                                              & buffer,
@@ -1216,9 +1216,10 @@ enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
        if (receivedLength == 0)
          return 0;
 
+       /*这一次接收*/
        host -> receivedData = host -> packetData [0];
        host -> receivedDataLength = receivedLength;
-      
+       /*总数*/
        host -> totalReceivedData += receivedLength;
        host -> totalReceivedPackets ++;
 
@@ -1239,7 +1240,7 @@ enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
              break;
           }
        }
-        
+       /*送去处理了*/
        switch (enet_protocol_handle_incoming_commands (host, event))
        {
        case 1:

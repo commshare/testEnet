@@ -124,6 +124,7 @@ namespace enetpp {
 						}
 
 						case ENET_EVENT_TYPE_RECEIVE: {
+							/*直接可以拿到指针和大小啊*/
 							on_data_received(e.packet->data, e.packet->dataLength);
 							enet_packet_destroy(e.packet);
 							break;

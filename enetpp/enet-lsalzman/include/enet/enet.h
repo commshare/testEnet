@@ -381,7 +381,7 @@ typedef struct _ENetHost
    ENetCompressor       compressor;
    enet_uint8           packetData [2][ENET_PROTOCOL_MAXIMUM_MTU];
    ENetAddress          receivedAddress;
-   enet_uint8 *         receivedData;
+   enet_uint8 *         receivedData; /*收到的数据放这里*/
    size_t               receivedDataLength;
    enet_uint32          totalSentData;               /**< total data sent, user should reset to 0 as needed to prevent overflow */
    enet_uint32          totalSentPackets;            /**< total UDP packets sent, user should reset to 0 as needed to prevent overflow */

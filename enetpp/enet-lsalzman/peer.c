@@ -135,6 +135,7 @@ enet_peer_send (ENetPeer * peer, enet_uint8 channelID, ENetPacket * packet)
       else
       {
          commandNumber = ENET_PROTOCOL_COMMAND_SEND_FRAGMENT | ENET_PROTOCOL_COMMAND_FLAG_ACKNOWLEDGE;
+         /*要变为网络序列的，然后放进结构体内存储*/
          startSequenceNumber = ENET_HOST_TO_NET_16 (channel -> outgoingReliableSequenceNumber + 1);
       }
         
@@ -194,6 +195,7 @@ enet_peer_send (ENetPeer * peer, enet_uint8 channelID, ENetPacket * packet)
    if ((packet -> flags & (ENET_PACKET_FLAG_RELIABLE | ENET_PACKET_FLAG_UNSEQUENCED)) == ENET_PACKET_FLAG_UNSEQUENCED)
    {
       command.header.command = ENET_PROTOCOL_COMMAND_SEND_UNSEQUENCED | ENET_PROTOCOL_COMMAND_FLAG_UNSEQUENCED;
+      /*发送的时候，需要吧主机序列变为网络序列发送*/
       command.sendUnsequenced.dataLength = ENET_HOST_TO_NET_16 (packet -> dataLength);
    }
    else 
@@ -883,6 +885,7 @@ enet_peer_queue_incoming_command (ENetPeer * peer, const ENetProtocol * command,
 
     case ENET_PROTOCOL_COMMAND_SEND_UNRELIABLE:
     case ENET_PROTOCOL_COMMAND_SEND_UNRELIABLE_FRAGMENT:
+      /*接收端要把网络字节序变为主机序列*/
        unreliableSequenceNumber = ENET_NET_TO_HOST_16 (command -> sendUnreliable.unreliableSequenceNumber);
 
        if (reliableSequenceNumber == channel -> incomingReliableSequenceNumber && 
@@ -934,6 +937,7 @@ enet_peer_queue_incoming_command (ENetPeer * peer, const ENetProtocol * command,
     if (peer -> totalWaitingData >= peer -> host -> maximumWaitingData)
       goto notifyError;
 
+    /*创建一个packet */
     packet = enet_packet_create (data, dataLength, flags);
     if (packet == NULL)
       goto notifyError;
